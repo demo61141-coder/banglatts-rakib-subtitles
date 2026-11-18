@@ -24,7 +24,7 @@ MIN_SILENCE_S = 0.40     # এর চেয়ে লম্বা নীরব�
                        # ভেতরের বিরতি সর্বোচ্চ ০.২৫ সেকেন্ড, আর জোড়ার ফাঁক
                        # কমপক্ষে ০.৫০ সেকেন্ড — তাই ০.৪০ নিরাপদ সীমা)
 MIN_SPEECH_S = 0.50      # এর চেয়ে ছোট টুকরো বাক্য হতে পারে না
-FRAME_S = 0.05           # RMS মাপার জানালা
+FRAME_S = 0.02           # RMS মাপার জানালা (০.০৫ থেকে ছোট করা — সীমানা আরও নিখুঁত হয়)
 
 
 def split_sentences(text: str) -> list[str]:
@@ -117,7 +117,7 @@ def silence_segments(audio: np.ndarray, rate: int) -> list[tuple[float, float]]:
         return []
     # থ্রেশহোল্ড: সর্বোচ্চ শব্দের ৩% — রাকিবের ০.৫ সেকেন্ডের জোড়া নীরবতা
     # পুরো শূন্য, তাই এই সীমায় ধরা পড়বেই।
-    silent = rms < max(peak * 0.03, 1e-4)
+    silent = rms < max(peak * 0.01, 1e-4)
     min_sil_frames = max(1, int(MIN_SILENCE_S / FRAME_S))
     # লম্বা নীরবতার মাঝখানটা বের করো
     bounds: list[tuple[float, float]] = []
